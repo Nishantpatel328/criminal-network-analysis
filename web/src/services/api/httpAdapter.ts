@@ -1,0 +1,10 @@
+import type { ApiAdapter, LoginCredentials } from './endpoints';
+import type { AuthSession, InvestigatorProfile } from '../../types/models';
+export class HttpAdapter {
+ private base:string; constructor(base:string){this.base=base.replace(/\/$/,'');}
+ private async req<T>(path:string, init?:RequestInit):Promise<T>{const r=await fetch(this.base+path,{...init,headers:{'Content-Type':'application/json',...(init?.headers||{})}});if(!r.ok)throw new Error(`API request failed (${r.status})`);return r.json();}
+ login(c:LoginCredentials){return this.req<AuthSession>('/login',{method:'POST',body:JSON.stringify(c)});} profile(){return this.req<InvestigatorProfile>('/profile');}
+ dashboard(){return this.req('/dashboard');} listCases(q={}){return this.req('/cases?'+new URLSearchParams(q as any));} getCase(id:string){return this.req('/cases/'+id);} listEntities(q={}){return this.req('/entities?'+new URLSearchParams(q as any));} getEntity(id:string){return this.req('/entities/'+id);} search(q:string){return this.req('/search?q='+encodeURIComponent(q));}
+ getNetwork(id:string,o={}){return this.req('/network/'+id+'?'+new URLSearchParams(o as any));} listRelationships(q={}){return this.req('/relationships?'+new URLSearchParams(q as any));} listEvents(q={}){return this.req('/events?'+new URLSearchParams(q as any));} listLocations(q={}){return this.req('/locations?'+new URLSearchParams(q as any));} listTransactions(q={}){return this.req('/transactions?'+new URLSearchParams(q as any));} listCDR(q={}){return this.req('/cdr?'+new URLSearchParams(q as any));} listAlerts(q={}){return this.req('/alerts?'+new URLSearchParams(q as any));}
+ acknowledgeAlert(id:string){return this.req('/alerts/'+id+'/ack',{method:'POST'});} generateReport(caseId:string){return this.req('/reports',{method:'POST',body:JSON.stringify({caseId})});} listDataSources(){return this.req('/sources');} importData(sourceId:string,payload:{records:number}){return this.req('/sources/'+sourceId+'/import',{method:'POST',body:JSON.stringify(payload)});}
+}

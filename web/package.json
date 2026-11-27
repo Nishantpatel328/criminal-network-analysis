@@ -1,0 +1,58 @@
+{
+  "name": "cna-web",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Analyst workstation for the Criminal Network Analysis system (zone Z0).",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "typecheck": "tsc --noEmit",
+    "preview": "vite preview",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-router-dom": "6.28.0",
+    "recharts": "2.15.0"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.18",
+    "@types/react-dom": "18.3.5",
+    "@vitejs/plugin-react": "4.3.4",
+    "typescript": "5.7.2",
+    "vite": "6.0.7",
+    "vitest": "2.1.8"
+  },
+  "//dependencies": [
+    "Two runtime dependencies. This is a deliberate ceiling, not an accident of a",
+    "small app.",
+    "",
+    "No graph library. d3-force, cytoscape, sigma and vis-network were all",
+    "considered and all rejected for the same reason: each wants to own both the",
+    "layout and the drawing, and the drawing is where this system's honesty",
+    "controls live. Edge opacity carries source reliability, dash pattern carries",
+    "the intelligence assessment, community boundaries are open arcs rather than",
+    "closed hulls, and the analyst's identity is painted into the pixels. Bending a",
+    "general-purpose renderer into those constraints is more code than",
+    "src/graph/render.ts, and it leaves the constraints as configuration that a",
+    "later contributor can switch off. Layout is ~90 lines of Barnes-Hut-free",
+    "force integration in src/graph/layout.ts, which is enough for the 500-element",
+    "ceiling the API enforces.",
+    "",
+    "No CSS-in-JS. styled-components and emotion inject <style> elements at",
+    "runtime, which requires style-src 'unsafe-inline'. Weakening the CSP so the",
+    "styling is more ergonomic is the wrong trade in a system holding intelligence",
+    "data. Plain CSS with custom properties, and React's style prop where a value",
+    "is genuinely dynamic (that writes through CSSOM, which CSP does not gate).",
+    "",
+    "No state manager, no data-fetching library. Every response carries a",
+    "disclosure envelope and an audit sequence number that must be shown to the",
+    "analyst; a cache that replays a response would show a disclosure notice for a",
+    "disclosure that was never audited. See src/api/client.ts.",
+    "",
+    "No router. Deep-linkable URLs would put entity ids and case numbers in browser",
+    "history and in the referrer of anything the analyst opens next."
+  ]
+}

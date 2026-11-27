@@ -1,0 +1,33 @@
+# Analytics workers (Z4 — the pseudonymised compute plane).
+#
+# This list is short on purpose. Z4 receives surrogate keys, edge weights and one
+# confidence scalar; it holds no identities and needs no identity-handling code.
+# Every dependency added here is a dependency that runs in a process which, if
+# compromised, must still not be able to name a person.
+
+# Leiden. Chosen over Louvain for the connectivity guarantee — see
+# docs/analytics.md §3. `leidenalg` is the reference implementation and requires
+# python-igraph as its graph substrate.
+leidenalg==0.10.2
+python-igraph==0.11.8
+
+numpy==2.2.1
+
+# Bolt driver, scoped to a read-only Neo4j user against the pseudonymised
+# projection. Z4 credentials cannot read the identifying properties even if the
+# code asks for them; the boundary is enforced in the database as well as in the
+# code path.
+neo4j==5.27.0
+
+structlog==24.4.0
+
+# Deliberately absent:
+#   - No HTTP client and no web framework. Workers pull from a queue; they do not
+#     accept inbound connections, so there is no request surface to protect.
+#   - No pandas. It is convenient for exploratory work and its convenience is the
+#     problem: `df.merge()` against an identifying table is one line, and the
+#     whole point of this process boundary is that such a line should be
+#     impossible to write, not merely discouraged.
+#   - Nothing from services/api. Enforced by test
+#     (tests/test_config.py::TestBoundaryDuplicationDoesNotDrift) rather than by
+#     convention, because the API package is where the crosswalk lives.
