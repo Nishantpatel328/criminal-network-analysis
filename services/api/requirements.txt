@@ -1,0 +1,41 @@
+# API service (Z2 — the identifying tier).
+#
+# Pinned exactly, not with `>=`. This service reads intelligence data under a
+# statutory authorisation; "whatever resolved at build time" is not an acceptable
+# answer to an auditor asking what code was running when a disclosure was made.
+# Hashes are added by the build pipeline (`pip-compile --generate-hashes`); they
+# are omitted here so the file stays readable as a scaffold.
+
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.4
+
+# Neo4j official driver. Bolt over TLS, and the only component permitted to
+# speak to Z3.
+neo4j==5.27.0
+
+# Token verification against the force IdP's JWKS. `cryptography` is pinned
+# tightly because it is the one dependency whose CVEs are directly exploitable
+# from an unauthenticated request path.
+pyjwt[crypto]==2.10.1
+cryptography==44.0.0
+
+# HSM / KMS client for the audit MAC key and the surrogate root key. The
+# in-process alternatives in this repo refuse to construct outside dev/test
+# (see app/core/config.py), so this is not optional in a real deployment.
+boto3==1.35.90
+
+# Structured logging. JSON to stdout, collected by the platform; the audit chain
+# is separate and is not a log.
+structlog==24.4.0
+
+# Deliberately absent:
+#   - Any ORM. Every query is a registered, reviewed Cypher string; an ORM's
+#     value is generating queries, which is exactly the capability this design
+#     removes.
+#   - Any templating engine. The API returns JSON. No server-rendered HTML means
+#     no server-side XSS surface.
+#   - Redis or any cache. Caching authorisation results or record payloads would
+#     mean a disclosure could be served without a policy decision and without an
+#     audit record. If a cache is ever added it must key on the decision, not the
+#     resource.

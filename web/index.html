@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!--
+      No <meta http-equiv="Content-Security-Policy">. The header is set by the
+      service (services/api/app/main.py SECURITY_HEADERS) and by the edge proxy.
+      A meta-tag CSP cannot express frame-ancestors and is applied only after the
+      document starts parsing, so duplicating it here would create a second,
+      weaker policy that someone would eventually edit instead of the real one.
+    -->
+    <meta name="referrer" content="no-referrer" />
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+
+    <title>Network Analysis</title>
+    <!--
+      Deliberately generic. The title appears in the taskbar, in window switchers,
+      and in any screen-sharing thumbnail. "Operation Kingfisher — Criminal
+      Network Analysis" in a title bar is a disclosure in every meeting the
+      analyst joins with this tab open.
+    -->
+
+    <link rel="stylesheet" href="/src/styles/tokens.css" />
+    <link rel="stylesheet" href="/src/styles/app.css" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>
+      This workstation requires JavaScript. It is not available as a static page:
+      every record shown here is released by a policy decision made per request.
+    </noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

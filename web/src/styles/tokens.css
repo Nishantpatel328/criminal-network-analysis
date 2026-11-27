@@ -1,0 +1,128 @@
+/* ==========================================================================
+   Design tokens.
+
+   THE ONE IDEA
+   Hue encodes provenance. Ink density encodes confidence. Nothing else may use
+   colour to mean anything.
+
+   An analyst looking at this screen has to be able to tell, without reading a
+   word, whether a mark on the graph is something a witness attested to or
+   something a modularity optimiser inferred. Those are different epistemic
+   objects with different evidential value and different legal consequences, and
+   the interface that renders them identically is the interface that produces a
+   warrant application built on a clustering coefficient.
+
+   So the palette is a taxonomy, not a mood:
+
+     --ink      structure, chrome, labels        (neutral: carries no claim)
+     --attest   recorded fact from the graph     (teal)
+     --infer    algorithmic output               (violet)
+     --withheld something exists but is not shown (amber)
+     --refuse   the request was denied           (red — and only this)
+
+   Five meanings, five hues, no overlap, no decorative use of any of them. A
+   sixth accent introduced later for visual interest would break the system, so
+   there is no sixth accent.
+
+   WHY LIGHT, NOT DARK
+   Confidence is drawn as alpha. A line at 0.18 alpha reads as "faint but
+   present" against light paper and as "absent" against near-black — the low end
+   of the confidence ramp is exactly where legibility matters most, because that
+   is where an analyst is deciding whether to trust an edge. A dark theme would
+   silently delete the least reliable intelligence from the display, which is the
+   most dangerous possible rendering bug: it does not look like a bug, it looks
+   like a clean graph.
+
+   The paper is cooled slightly (blue-grey, not cream) so the teal and violet
+   channels stay distinguishable from it at low alpha.
+   ========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* --- Surfaces ------------------------------------------------------- */
+  --paper:        #edeef0;   /* canvas and app background */
+  --panel:        #f6f7f8;   /* side panels, cards */
+  --panel-sunk:   #e4e6e9;   /* wells, inset regions */
+  --rule:         #c7cbd1;   /* hairlines */
+  --rule-strong:  #a6acb5;
+
+  /* --- Neutral ink ---------------------------------------------------- */
+  --ink:          #1b1f23;
+  --ink-2:        #4a5158;   /* secondary text */
+  --ink-3:        #767d85;   /* captions, disabled */
+
+  /* --- The taxonomy --------------------------------------------------- */
+  --attest:       #275a6b;   /* recorded in the evidential graph */
+  --attest-soft:  #e0ebee;
+  --infer:        #6d4482;   /* produced by an algorithm */
+  --infer-soft:   #ece4f1;
+  --withheld:     #8a5a00;   /* redacted or withheld — a normal outcome */
+  --withheld-soft:#f6eddc;
+  --refuse:       #8e2c2c;   /* denied by policy — an abnormal one */
+  --refuse-soft:  #f7e6e6;
+
+  /* --- Confidence ramp ------------------------------------------------
+     Six stops keyed to the 5x5x5 reliability product in
+     services/analytics/worker/weighting.py. These are alpha values applied to
+     --attest for edges, so the ramp is one hue at six densities rather than six
+     colours — a colour ramp would imply six categories, and reliability is
+     continuous.
+
+     The floor is 0.16, not 0.04. An edge drawn at 4% alpha is invisible on most
+     police-issue monitors at office brightness, and an invisible edge is a
+     stronger claim than a faint one: it says the relationship does not exist.
+     Nothing in this system is permitted to say that by accident.              */
+  --conf-1: 1.00;   /* always reliable, known true */
+  --conf-2: 0.78;
+  --conf-3: 0.55;
+  --conf-4: 0.36;
+  --conf-5: 0.24;
+  --conf-floor: 0.16;
+
+  /* --- Type ------------------------------------------------------------
+     System faces keep the interface portable without external font requests.
+     Condensed UI faces improve fit in narrow entity and graph gutters. */
+  --face-ui:   "Segoe UI Semibold", "Arial Narrow", system-ui, sans-serif;
+  --face-text: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --face-data: ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+  /* Type scale. Tight at the small end because this interface is read for six
+     hours at a stretch and the dense end is where the identifiers live. */
+  --t-micro:  10.5px;  /* 5x5x5 codes, audit sequence, surrogate keys */
+  --t-cap:    11.5px;  /* eyebrow labels, small caps */
+  --t-body:   13.5px;
+  --t-read:   14.5px;  /* running prose: derivation envelopes, assessments */
+  --t-title:  17px;
+  --t-head:   22px;
+
+  --lh-tight: 1.25;
+  --lh-read:  1.55;
+
+  /* --- Space ---------------------------------------------------------- */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+
+  --chrome-top: 44px;
+  --chrome-bot: 34px;
+  --rail-left: 232px;
+  --rail-right: 340px;
+
+  /* Radius is near-zero throughout. Not a stylistic tic: rounded cards read as
+     consumer software, and this tool sits alongside case management systems in
+     an evidential chain. The one exception is the node circles, which are
+     circles because entities are points, not boxes. */
+  --radius: 2px;
+
+  --focus: #1155cc;
+
+  --motion: 180ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --motion: 0ms; }
+}
